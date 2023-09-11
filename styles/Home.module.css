@@ -49,17 +49,28 @@
     margin: 0;
     line-height: 1.15;
     font-size: 2rem;
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
+        DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
 .title,
 .description {
     text-align: center;
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
+        DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
 .description {
     margin: 4rem 0;
     line-height: 1.5;
     font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.return {
+    text-decoration: none;
+    font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
+        DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
 }
 
 .code {

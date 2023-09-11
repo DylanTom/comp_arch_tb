@@ -30,7 +30,7 @@ const Lab1: NextPage = () => {
     ];
 
     const first_line =
-        "\n# Notes: Please see the lab report for detailed insight into how testing works." +
+        "# Notes: Please see the lab report for detailed insight into how testing works." +
         "\n#        " +
         "\n#        The first line above is the header, indicating the pins and their bit widths." +
         "\n#        " +
@@ -136,11 +136,6 @@ const Lab1: NextPage = () => {
             features.push(Object.values(o.features).toString())
             newText += "\n" + o.line + Object.values(o.features);
         }
-
-        const uniqueFeatures = new Set(features);
-        console.log(uniqueFeatures)
-        
-        newText += '\n There are ' + uniqueFeatures.size + ' unique combinations. We are expecting 128 unique combinations';
 
         setTestCases(newText);
     };

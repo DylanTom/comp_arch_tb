@@ -30,7 +30,7 @@ const Lab1: NextPage = () => {
     ];
 
     const first_line =
-        "# Notes: Please see the lab report for detailed insight into how testing works." +
+        "\n# Notes: Please see the lab report for detailed insight into how testing works." +
         "\n#        " +
         "\n#        The first line above is the header, indicating the pins and their bit widths." +
         "\n#        " +

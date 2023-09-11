@@ -3,8 +3,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import React from "react";
 import Link from "next/link";
-
-const filePath = '../cms/tb.v';
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const Lab1: NextPage = () => {
     // constants
@@ -173,6 +172,24 @@ const Lab1: NextPage = () => {
     //       });
     // }
 
+    const [inputValue, setInputValue] = React.useState('');
+
+    const handleSubmit = (event: any) => {
+        event.preventDefault();
+        if (!isNaN(parseInt(inputValue))) {
+            setLines(parseInt(inputValue));
+            setInputValue('');
+        }
+    };
+
+    const handleChange = (event: any) => {
+        setInputValue(event.target.value);
+    };
+
+    React.useEffect(() => {
+        generate();
+      }, [num_of_lines]);
+
     return (
         <div className={styles.container}>
             <Head>
@@ -193,22 +210,21 @@ const Lab1: NextPage = () => {
                     Return Home
                 </Link>
                 <br />
-                <button onClick={generate} className='hover:cursor-pointer'>
-                    Generate Test Cases{" "}
-                </button>
                 <button onClick={() => setBinary(!format_as_binary)} >
                     {format_as_binary ? "Switch to Decimal" : "Switch to Binary"}
                 </button>
-                
-                {/* <button onClick={injectData}>
-                    Inject Data
-                </button> */}
+
+                <form onSubmit={handleSubmit}>
+                    <input type="text" value={inputValue} onChange={handleChange} placeholder="Enter # of Testcases" />
+                    <button type="submit">Generate Test Cases</button>
+                </form>
+
                 <br />
-                {/* <CopyToClipboard text={testCases}>
+                <CopyToClipboard text={testCases}>
                     <button className='bg-blue-600 text-white text-sm leading-6 font-medium py-2 px-5 rounded-lg'>
                         Copy to Clipboard
                     </button>
-                </CopyToClipboard> */}
+                </CopyToClipboard>
                 <br />
                 <br />
                 <hr />

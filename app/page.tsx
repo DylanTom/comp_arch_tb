@@ -29,40 +29,33 @@ const Home: NextPage = () => {
               Iterative Integer Multiplier
             </p>
           </Link>
+          <Link href='/lab2' className={styles.card}>
+            <h2>Lab 2 &rarr;</h2>
+            <p>
+              Pipelined Processor
+            </p>
+          </Link>
+          <Link href='/lab3' className={styles.card}>
+            <h2>Lab 3 &rarr;</h2>
+            <p>
+              Blocking Cache
+            </p>
+          </Link>
+          <Link href='/lab4' className={styles.card}>
+            <h2>Lab 4 &rarr;</h2>
+            <p>
+              Multicore Processor
+            </p>
+          </Link>
         </div>
 
-        {/* <div className={styles.grid}>
-                    <Link href='/adder' className={styles.card}>
-                        <a href='' className={styles.card}>
-                            <h2>Test Add32 &rarr;</h2>
-                            <p>
-                                32-bit adder for signed two's complement
-                                numbers.
-                            </p>
-                        </a>
-                    </Link>
-
-                    <Link href='/leftshifter' className={styles.card}>
-                        <a href='' className={styles.card}>
-                            <h2>Test LeftShift32 &rarr;</h2>
-                            <p>32-bit logical left-shifter</p>
-                        </a>
-                    </Link>
-
-                    <Link href='/alu' className={styles.card}>
-                        <a href='' className={styles.card}>
-                            <h2>Test ALU &rarr;</h2>
-                            <p>32-bit ALU</p>
-                        </a>
-                    </Link>
-                </div> */}
       </main>
 
       <footer className={styles.footer}>
         <p >
           Inspired by Daniel Wei
         </p>
-        
+
         <a
           href='https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app'
           target='_blank'

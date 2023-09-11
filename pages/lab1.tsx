@@ -2,32 +2,31 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import React from "react";
-// import RandomUtils from "../libs/random";
-// import { CopyToClipboard } from "react-copy-to-clipboard";
+import Link from "next/link";
+
+const filePath = '../cms/tb.v';
 
 const Lab1: NextPage = () => {
     // constants
-    const num_of_lines = 20;
-    const format_as_binary = false;
+    const [num_of_lines, setLines] = React.useState(100);
+    const [format_as_binary, setBinary] = React.useState(true);
 
-    const MAX_INT = 2147483647;
-    const MIN_INT = -(MAX_INT + 1);
+    const MAX_INT = (2 ** 31) - 1;
+    const MIN_INT = - (2 ** 31);
 
     const edge_cases = [
-        "2147483647 -2147483648",
-        "2147483647 2147483647",
-        "2147483647 2147483647",
-        "-2147483648 -2147483648",
-        "-2147483648 -2147483648",
-        "2147483647 -2147483648",
-        " 0 0",
-        "0 0",
-        "0 1",
-        "-1 1",
-        "1 0",
-        "-1 0",
-        "1 1",
-        "0 -1",
+        [2147483647, -2147483648],
+        [2147483647, 2147483647],
+        [2147483647, 2147483647],
+        [-2147483648, -2147483648],
+        [0, 0],
+        [0, 1],
+        [-1, 1],
+        [1, 0],
+        [-1, 0],
+        [1, 1],
+        [0, -1],
+        [-1, -1]
     ];
 
     const first_line =
@@ -41,7 +40,7 @@ const Lab1: NextPage = () => {
         "\n#        " +
         `\n#        See the design report for more information.` +
         `\n` +
-        `\n A[32] B[32] Out[32]`
+        `\n A[31:0] B[31:0] Out[31:0] containsNegative containsPositive containsZero containsLarge containsSmall containsSparse containsDense`
 
     type SingularTestCase = {
         line: string;
@@ -51,29 +50,48 @@ const Lab1: NextPage = () => {
             containsZero: boolean;
             containsLarge: boolean;
             containsSmall: boolean;
+            containsSparse: boolean;
+            containsDense: boolean;
         };
     };
 
-    const seededRandomFloat = (floor: number, ceiling: number, seed: number) => {
-        var x = Math.sin(seed++) * 10000;
-        let zeroToOne = x - Math.floor(x);
-        return zeroToOne * (ceiling - floor) + floor;
-    };
+    const getTwoComplement = (a: number) => {
+        if (a < MIN_INT || a > MAX_INT) {
+            return a.toString(2).slice(-32)
+        }
+        else if (a >= 0 && a <= MAX_INT) {
+            return a.toString(2).padStart(32, '0');
+        } else {
+            const positiveValue = (-a) ^ MAX_INT;
+            return (positiveValue + 1).toString(2).padStart(32, '1');
+        }
+    }
+
+    const isSparse = (a: number) => {
+        if ((a & (a >> 1)) == 0) return true;
+        return false;
+    }
 
     // generates a new singlar test case
-    const newLine = (asBinary: boolean): SingularTestCase => {
+    const newLine = (asBinary: boolean, alpha?: number, beta?: number): SingularTestCase => {
         let line = "";
 
-        let a = Math.floor(Math.random() * (MAX_INT - MIN_INT + 1)) + MIN_INT;
-        let b = Math.floor(Math.random() * (MAX_INT - MIN_INT + 1)) + MIN_INT;
+        let a: number, b: number;
 
+        if (alpha !== undefined && beta !== undefined) {
+            a = alpha
+            b = beta
+        } else {
+            a = Math.floor(Math.random() * (MAX_INT - MIN_INT + 1)) + MIN_INT;
+            b = Math.floor(Math.random() * (MAX_INT - MIN_INT + 1)) + MIN_INT;
+        }
 
         let out = a * b;
 
         if (asBinary) {
-            line += a.toString(2) + " ";
-            line += b.toString(2) + " ";
-            line += out.toString(2) + " ";
+            line += getTwoComplement(a) + " ";
+            line += getTwoComplement(b) + " ";
+            line += getTwoComplement(out) + " ";
         } else {
             line += a + " ";
             line += b + " ";
@@ -87,7 +105,9 @@ const Lab1: NextPage = () => {
                 containsPositive: a > 0 || b > 0,
                 containsZero: a == 0 || b == 0,
                 containsLarge: Math.abs(a) > Math.floor(MAX_INT / 2) || Math.abs(b) > Math.floor(MAX_INT / 2),
-                containsSmall: Math.abs(a) < Math.floor(MAX_INT / 2) || Math.abs(b) < Math.floor(MAX_INT / 2)
+                containsSmall: Math.abs(a) < Math.floor(MAX_INT / 2) || Math.abs(b) < Math.floor(MAX_INT / 2),
+                containsSparse: isSparse(a) || isSparse(b),
+                containsDense: !isSparse(a) || !isSparse(b)
             },
         };
     };
@@ -101,7 +121,9 @@ const Lab1: NextPage = () => {
             containsPositive: false,
             containsZero: false,
             containsLarge: false,
-            containsSmall: false
+            containsSmall: false,
+            containsSparse: false,
+            containsDense: false
         };
 
         let newText = first_line;
@@ -115,9 +137,8 @@ const Lab1: NextPage = () => {
                     featureCheck[key as keyof typeof featureCheck] = true;
                 }
             }
-
             // Append the new line to the text
-            newText += "\n" + o.line;
+            newText += "\n" + o.line + Object.values(o.features);
         }
 
         // if the feature check features aren't all true, generate again
@@ -130,12 +151,27 @@ const Lab1: NextPage = () => {
 
         // add the edge cases
         for (let i = 0; i < edge_cases.length; i++) {
-            newText += "\n" + edge_cases[i];
+            let o = newLine(format_as_binary, edge_cases[i][0], edge_cases[i][1]);
+            newText += "\n" + o.line + Object.values(o.features);
         }
 
         // if the feature check passes, set the text
         setTestCases(newText);
     };
+
+    // const injectData = () => {
+    //     exec('bash ../scripts/inject.sh', (error, stdout, stderr) => {
+    //         if (error) {
+    //           console.error(`Error executing script: ${error}`);
+    //           return;
+    //         }
+    //         if (stderr) {
+    //           console.error(`Script returned an error: ${stderr}`);
+    //           return;
+    //         }
+    //         console.log("Sucessful");
+    //       });
+    // }
 
     return (
         <div className={styles.container}>
@@ -153,9 +189,20 @@ const Lab1: NextPage = () => {
                     Lab 1: Iterative Integer Multiplier
                 </h1>
                 <br />
+                <Link href="/">
+                    Return Home
+                </Link>
+                <br />
                 <button onClick={generate} className='hover:cursor-pointer'>
                     Generate Test Cases{" "}
                 </button>
+                <button onClick={() => setBinary(!format_as_binary)} >
+                    {format_as_binary ? "Switch to Decimal" : "Switch to Binary"}
+                </button>
+                
+                {/* <button onClick={injectData}>
+                    Inject Data
+                </button> */}
                 <br />
                 {/* <CopyToClipboard text={testCases}>
                     <button className='bg-blue-600 text-white text-sm leading-6 font-medium py-2 px-5 rounded-lg'>
@@ -167,6 +214,7 @@ const Lab1: NextPage = () => {
                 <hr />
                 <br />
                 <code className={styles.code}>{testCases}</code>
+                <br />
             </main>
         </div>
     );

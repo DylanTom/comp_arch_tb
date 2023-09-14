@@ -195,6 +195,34 @@ const Lab1: NextPage = () => {
 
         newText += "\n--/";
 
+        newText += `\n/-- Sparse Tests`;
+
+        for (let j = 0; j < num_directed; j++) {
+            let a = getRandomInt();
+            let b = getRandom_mask(false);
+
+            let o = newLine(format_as_binary, a, b);
+
+            newText += "\n" + o.line;
+
+        }
+
+        newText += "\n--/";
+
+        newText += `\n/-- Dense Tests`;
+
+        for (let j = 0; j < num_directed; j++) {
+            let a = getRandomInt();
+            let b = getRandom_mask(false);
+
+            let o = newLine(format_as_binary, a, b);
+
+            newText += "\n" + o.line;
+
+        }
+
+        newText += "\n--/";
+
         // add the edge cases
         newText += "\n/-- Edge Cases --/";
         for (let i = 0; i < edge_cases.length; i++) {
